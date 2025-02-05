@@ -1,30 +1,31 @@
-# Bookify - Library Management System  
+# VictoryViz  
 
 ## Description  
-Bookify is a streamlined library management system built with Streamlit and Python, designed for efficient book tracking, issuance, and returns. It utilizes file-based storage to manage book records, ensuring real-time data updates and seamless user interactions. The system enables users to add, delete, issue, and return books while maintaining an intuitive interface for easy navigation.  
+A Streamlit-based web application that provides interactive data analysis and visualization of Olympic Games history. It processes athlete event data and offers insights into medal tallies, country-wise and athlete-wise performance, and overall trends in Olympic history.  
 
 ## Features  
-- Add new books to the library  
-- Issue books to students with tracking  
-- Return issued books efficiently  
-- Delete books (if not issued)  
-- Display available and issued books  
-- Simple and interactive UI with Streamlit  
+- **Medal Tally** – View medals by country and year  
+- **Overall Analysis** – Track trends in sports, athletes, and nations  
+- **Country-wise Analysis** – Analyze a country's Olympic performance over time  
+- **Athlete-wise Analysis** – Examine athlete distribution and age trends  
+- **Interactive Visualizations** – Line charts, tables, and distributions using Plotly  
 
 ## Technologies Used  
-- **Streamlit** – For the web-based user interface  
-- **Python** – Backend logic and processing  
-- **File I/O** – For data storage and retrieval  
+- **Python** – Data processing and backend logic  
+- **Streamlit** – Web framework for interactive UI  
+- **Pandas** – Data handling and manipulation  
+- **Plotly** – Data visualization  
+- **Scipy** – Statistical distributions  
 
 ## Installation  
 1. Clone the repository:  
    ```bash
-   git clone https://github.com/deepak-158/Bookify
-   cd Bookify
+   git clone https://github.com/your-username/VictoryViz.git
+   cd Olympics-Analysis
    ```  
 2. Install dependencies:  
    ```bash
-   pip install streamlit
+   pip install -r requirements.txt
    ```  
 3. Run the application:  
    ```bash
@@ -32,11 +33,8 @@ Bookify is a streamlined library management system built with Streamlit and Pyth
    ```  
 
 ## Usage  
-- Select an option from the sidebar (Add, Issue, Return, Delete, Display Books).  
-- Enter the required details and perform actions accordingly.  
-- View available books and issued books in separate sections.  
+- Select an option from the sidebar to explore different analyses.  
+- View medal tallies, trends, and visual insights interactively.  
 
 ## Contributing  
-Contributions are welcome! Fork the repository, make your changes, and submit a pull request.  
- 
-
+Fork the repository, create a new branch, and submit a pull request with improvements.  
