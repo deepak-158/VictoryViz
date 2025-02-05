@@ -19,7 +19,7 @@ Bookify is a streamlined library management system built with Streamlit and Pyth
 ## Installation  
 1. Clone the repository:  
    ```bash
-   git clone https://github.com/your-username/Bookify.git
+   git clone https://github.com/deepak-158/Bookify
    cd Bookify
    ```  
 2. Install dependencies:  
