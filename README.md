@@ -21,7 +21,7 @@ A Streamlit-based web application that provides interactive data analysis and vi
 1. Clone the repository:  
    ```bash
    git clone https://github.com/your-username/VictoryViz.git
-   cd Olympics-Analysis
+   cd VictoryViz 
    ```  
 2. Install dependencies:  
    ```bash
