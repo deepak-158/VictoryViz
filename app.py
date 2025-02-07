@@ -1,105 +1,157 @@
 import streamlit as st
 import pandas as pd
-import preprocessor,helper
+import preprocessor, helper
 import plotly.express as px
-import scipy
 import plotly.figure_factory as ff
+
+
+st.markdown("""
+    <style>
+    /* Set Background Color */
+    .main {
+        background-color:rgb(100, 159, 248);
+    }
+
+    /* Sidebar Styling */
+    .sidebar .sidebar-content {
+        background: #003366;
+        color: white;
+        font-family: 'Arial', sans-serif;
+    }
+    .sidebar .css-1d391kg {
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    /* Titles & Headers */
+    h1, h2, h3, h4 {
+        color: #003366;
+        font-family: 'Georgia', serif;
+    }
+
+    /* Metric Box Styling */
+    .st-emotion-cache-1kyxreq {
+        border: 2px solid #003366 !important;
+        border-radius: 10px;
+        background: #e3eaf5;
+        font-family: 'Verdana', sans-serif;
+        font-weight: bold;
+    }
+
+    /* Buttons */
+    .stButton>button {
+        background-color: #003366;
+        color: white;
+        border-radius: 10px;
+        font-size: 16px;
+        font-family: 'Arial', sans-serif;
+        font-weight: bold;
+    }
+
+    /* Tables */
+    .dataframe {
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        color: #333;
+    }
+
+    </style>
+    """, unsafe_allow_html=True)
+
 
 df = pd.read_csv('athlete_events.csv')
 region_df = pd.read_csv('noc_regions.csv')
-df = preprocessor.preprocess(df,region_df)
-st.sidebar.title("Olympics Analysis")
+df = preprocessor.preprocess(df, region_df)
+st.markdown("<h1 style='text-align: center; color: #2C3E50; margin-bottom: 0;'>🏅 VictoryViz</h1>", unsafe_allow_html=True)
+
+st.sidebar.title("    🏅 Victory Viz")
+st.sidebar.subheader("The Ultimate Olympic Analysis")
+
 user_menu = st.sidebar.radio(
-    'Select an Option',
-    ('Medal Tally','Overall Analysis','Country wise Analysis','Athlete wise Anaysis','Creator Details')
+    '📊 Select an Option:',
+    ('🏆 Medal Tally', '🌎 Overall Analysis', '📌 Country-wise Analysis', '🏅 Athlete-wise Analysis')
 )
-if user_menu == 'Medal Tally':
-    st.sidebar.header("Medal Tally")
-    years,country=helper.country_year_list(df)
-    selected_year=st.sidebar.selectbox("Select Year",years)
-    selected_country = st.sidebar.selectbox("Select country", country)
-    medal_tally = helper.fetch_medal_tally(df,selected_year,selected_country)
-    if selected_year == 'overall' and selected_country == 'overall':
-        st.title("Overall Tally")
-    if selected_year != 'overall' and selected_country == 'overall':
-        st.title("Medal Tally in "+ str(selected_year)+" Olympics")
-    if selected_year == 'overall' and selected_country != 'overall':
-        st.title(selected_country+" overall performance")
-    if selected_year != 'overall' and selected_country != 'overall':
-        st.title(selected_country+" performance in " + str(selected_year)+" Olympics")
+
+
+if user_menu == '🏆 Medal Tally':
+    st.sidebar.header("🏅 Medal Tally")
+    years, country = helper.country_year_list(df)
+    
+    selected_year = st.sidebar.selectbox("Select Year", years)
+    selected_country = st.sidebar.selectbox("Select Country", country)
+    
+    medal_tally = helper.fetch_medal_tally(df, selected_year, selected_country)
+
+   
+    st.title(f"🎖️ {selected_country} Performance in {selected_year} Olympics" if selected_year != 'overall' else "🏅 Overall Medal Tally")
+    
+    
+    col1, col2, col3 = st.columns(3)
+    col1.metric(label="🥇 Gold", value=medal_tally['Gold'].sum())
+    col2.metric(label="🥈 Silver", value=medal_tally['Silver'].sum())
+    col3.metric(label="🥉 Bronze", value=medal_tally['Bronze'].sum())
+
     st.table(medal_tally)
-if user_menu == 'Creator Details':
-    st.title("Creator Details")
-    st.info("Name     : Deepak Shukla")
-    st.info("Reg no. : 23BCE11422")
-    st.info("ph no.   : 9450160224")
-    st.info("Email    : dipakshukla158@gmail.com")
-if user_menu == 'Overall Analysis':
-    editions = df['Year'].unique().shape[0]-1
-    cities = df['City'].unique().shape[0]
-    sports = df['Sport'].unique().shape[0]
-    events = df['Event'].unique().shape[0]
-    athletes = df['Name'].unique().shape[0]
-    nations = df['region'].unique().shape[0]
 
-    st.title("Top Statistics")
 
-    col1, col2, col3= st.columns(3)
-    with col1:
-        st.header("Editions")
-        st.title(editions)
-    with col2:
-        st.header("Hosts")
-        st.title(cities)
-    with col3:
-        st.header("Sports")
-        st.title(sports)
+
+
+if user_menu == '🌎 Overall Analysis':
+    st.title("📊 Top Statistics")
+    editions = df['Year'].nunique() - 1
+    cities = df['City'].nunique()
+    sports = df['Sport'].nunique()
+    events = df['Event'].nunique()
+    athletes = df['Name'].nunique()
+    nations = df['region'].nunique()
 
     col1, col2, col3 = st.columns(3)
-    with col1:
-        st.header("Events")
-        st.title(events)
-    with col2:
-        st.header("Nations")
-        st.title(nations)
-    with col3:
-        st.header("Athletes")
-        st.title(athletes)
-    nations_over_time= helper.data_over_time(df,'region')
-    flg = px.line(nations_over_time, x="Year", y="count")
-    st.title("Participating Nations Over The Year")
-    st.plotly_chart(flg)
+    col1.metric(label="🎉 Editions", value=editions)
+    col2.metric(label="🏟️ Hosts", value=cities)
+    col3.metric(label="🏋️ Sports", value=sports)
+
+    col1, col2, col3 = st.columns(3)
+    col1.metric(label="🎯 Events", value=events)
+    col2.metric(label="🌎 Nations", value=nations)
+    col3.metric(label="🏅 Athletes", value=athletes)
+
+    
+    st.title("📈 Trends Over Time")
+    nations_over_time = helper.data_over_time(df, 'region')
+    st.plotly_chart(px.line(nations_over_time, x="Year", y="count", title="🌎 Participating Nations Over Years"))
 
     events_over_time = helper.data_over_time(df, 'Event')
-    flg = px.line(events_over_time, x="Year", y="count")
-    st.title("Events Over The Year")
-    st.plotly_chart(flg)
+    st.plotly_chart(px.line(events_over_time, x="Year", y="count", title="🎯 Events Over Years"))
 
     athlete_over_time = helper.data_over_time(df, 'Name')
-    flg = px.line(athlete_over_time, x="Year", y="count")
-    st.title("Athletes Over The Year")
-    st.plotly_chart(flg)
+    st.plotly_chart(px.line(athlete_over_time, x="Year", y="count", title="🏅 Athletes Over Years"))
 
-if user_menu == 'Country wise Analysis':
 
-    st.sidebar.title('Country-wise Analysis')
-    country_list=df['region'].dropna().unique().tolist()
-    country_list.sort()
+if user_menu == '📌 Country-wise Analysis':
+    st.sidebar.title("📌 Country-wise Analysis")
+    country_list = sorted(df['region'].dropna().unique().tolist())
+    selected_country = st.sidebar.selectbox('Select a Country', country_list)
 
-    selected_country=st.sidebar.selectbox('select a Country',country_list)
+    country_df = helper.yearwise_medal_tally(df, selected_country)
+    st.title(f"📊 {selected_country} Medal Tally Over The Years")
+    st.plotly_chart(px.line(country_df, x="Year", y="Medal", title=f"🏅 {selected_country} Medal Tally"))
 
-    country_df=helper.yearwise_medal_tally(df,selected_country)
-    flg = px.line(country_df, x="Year", y="Medal")
-    st.title(selected_country+" Medal Tally Over The Year")
-    st.plotly_chart(flg)
 
-if user_menu =='Athlete wise Anaysis':
+if user_menu == '🏅 Athlete-wise Analysis':
     athlete_df = df.drop_duplicates(subset=['Name', 'region'])
     x1 = athlete_df['Age'].dropna()
     x2 = athlete_df[athlete_df['Medal'] == 'Gold']['Age'].dropna()
     x3 = athlete_df[athlete_df['Medal'] == 'Silver']['Age'].dropna()
     x4 = athlete_df[athlete_df['Medal'] == 'Bronze']['Age'].dropna()
-    fig = ff.create_distplot([x1, x2, x3, x4], ['Overall Age', 'Gold Medalist', 'Silver Medalist', 'Bronze Meadlist'],show_hist=False,show_rug=False)
-    fig.update_layout(autosize=False,width=1000,height=600)
-    st.title("Distribution of Age")
+
+    fig = ff.create_distplot([x1, x2, x3, x4], ['Overall Age', 'Gold Medalist', 'Silver Medalist', 'Bronze Medalist'], show_hist=False, show_rug=False)
+    fig.update_layout(autosize=False, width=1000, height=600)
+    
+    st.title("📊 Age Distribution of Athletes")
     st.plotly_chart(fig)
+st.sidebar.markdown("---")
+st.sidebar.markdown("<div style='text-align: center; color: #BDC3C7;'>", unsafe_allow_html=True)
+st.sidebar.caption("Developed by Deepak Shukla")
+st.sidebar.caption("23BCE11422")
+st.sidebar.markdown("</div>", unsafe_allow_html=True)
